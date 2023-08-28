@@ -1,25 +1,20 @@
-const express = require('express')
-const path = require('path')
-const rootDir = require('../util/path')
+// Import required modules
+const express = require('express');
+const path = require('path');
 
-const router = express.Router()
+const adminController = require('../controllers/admin');
+// Create a router instance from the Express framework
+const router = express.Router();
 
-const products = [];
 
-router.get('/add-product', (req, res, next) => {
-    res.render('add-product', {
-        pageTitle: 'Add Product',
-        path: '/add-product',
-        formsCSS: true,
-        productCSS: true,
-        activeAddProduct: true
-    })
-})
 
-router.post('/add-product', (req, res, next) => {
-    products.push({title: req.body.title})
-    res.redirect('/')
-})
+// Handle GET request to '/add-product' route
+router.get('/add-product', adminController.getAddProduct );
 
-exports.routes = router
-exports.products = products
+router.get('/products', adminController.getProducts );
+
+// Handle POST request to '/add-product' route
+router.post('/add-product', adminController.postAddProduct );
+
+// Export the router object to be used by other modules
+module.exports = router;
