@@ -1,20 +1,24 @@
-// Import required modules
-const express = require('express');
 const path = require('path');
 
+const express = require('express');
+
 const adminController = require('../controllers/admin');
-// Create a router instance from the Express framework
+
 const router = express.Router();
 
+// /admin/add-product => GET
+router.get('/add-product', adminController.getAddProduct);
 
+// /admin/products => GET
+router.get('/products', adminController.getProducts);
 
-// Handle GET request to '/add-product' route
-router.get('/add-product', adminController.getAddProduct );
+// /admin/add-product => POST
+router.post('/add-product', adminController.postAddProduct);
 
-router.get('/products', adminController.getProducts );
+router.get('/edit-product/:productId', adminController.getEditProduct);
 
-// Handle POST request to '/add-product' route
-router.post('/add-product', adminController.postAddProduct );
+router.post('/edit-product', adminController.postEditProduct);
 
-// Export the router object to be used by other modules
+router.post('/delete-product', adminController.postDeleteProduct);
+
 module.exports = router;
