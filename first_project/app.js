@@ -2,6 +2,8 @@ const path = require('path');
 
 const express = require('express');
 const bodyParser = require('body-parser');
+const session = require('express-session');
+const MySQLStore = require('express-mysql-session')(session);
 
 const errorController = require('./controllers/error');
 const sequelize = require('./util/database');
@@ -10,9 +12,17 @@ const User = require('./models/user');
 const Cart = require('./models/cart');
 const CartItem = require('./models/cart-item');
 const Order = require('./models/order');
-const OrderItem = require('./models/order-item');
+const OrderItem = require('./models/order-item.js');
 
 const app = express();
+const store = new MySQLStore({
+    host: 'localhost',
+    port: 3306,
+    user: 'aashish',
+    password: 'Aashish@99',
+    database: 'node-complete',
+    collection: 'sessions'
+})
 
 app.set('view engine', 'ejs');
 app.set('views', 'views');
@@ -23,9 +33,18 @@ const authRoutes = require('./routes/auth');
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({
+    secret: 'my secret',
+    resave: false,
+    saveUninitialized: false,
+    store: store
+}))
 
 app.use((req, res, next) => {
-    User.findByPk(1)
+    if (!req.session.user) {
+        return next();
+    }
+    User.findByPk(req.session.user.id)
         .then(user => {
             req.user = user;
             next();
