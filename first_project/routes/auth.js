@@ -23,10 +23,12 @@ router.post(
                             return Promise.reject('E-Mail does not exist, please try again.');
                         }
                     });
-            }),
+            })
+            .normalizeEmail(),
         body('password', 'Password has to be valid.')
             .isLength({ min: 5 })
             .isAlphanumeric()
+            .trim()
             
     ],
     authController.postLogin);
@@ -44,9 +46,10 @@ router.post(
                             return Promise.reject('E-Mail exists already, please pick a different one.');
                         }
                     });
-            }),
+            })
+            .normalizeEmail(),
         body('password', 'Password must be at least 5 characters long and contain only numbers and letters').trim().isLength({min: 5}).isAlphanumeric(),
-        body('confirmPassword').custom((value, { req }) => {
+        body('confirmPassword').trim().custom((value, { req }) => {
             if (value !== req.body.password) {
               throw new Error('Passwords have to match!');
             }
